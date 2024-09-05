@@ -284,6 +284,7 @@
         }
 
       }
+      mapClear();
     }
 
 
@@ -393,14 +394,14 @@
                 case bgColorMapChina:
                   console.log(`strname=${strName}`);
                   td.setAttribute('class', 'map');
-                  getMapSet(td, strName);
+                  getMapChinaSet(td, strName);
 
                   break;
                 //
                 case bgColorMapJapan:
                   console.log(`strname=${strName}`);
                   td.setAttribute('class', 'map');
-                  getMapSet(td, strName);
+                  getMapJapanSet(td, strName);
                   break;
                 default:
                   td.textContent = strName;
@@ -464,14 +465,25 @@
     //
     // したものを読み込んでいる。
 
-
-    async function getMapSet(div, svgAddress) {
+    //
+    async function getMapChinaSet(div, svgAddress) {
       const res = await fetch(svgAddress)
 
       if (res.ok) {
         const svg = await res.text()
         div.innerHTML = svg
         chinaMapSet();
+
+      }
+    }
+    //
+    async function getMapJapanSet(div, svgAddress) {
+      const res = await fetch(svgAddress)
+
+      if (res.ok) {
+        const svg = await res.text()
+        div.innerHTML = svg
+        japanMapSet();
 
       }
     }
@@ -485,22 +497,52 @@
         event.currentTarget.style.fill = ""
       })
       prefs.forEach((pref) => {
-        // pref.addEventListener('mouseover', (event) => {
-        //   event.currentTarget.style.fill = "#ff0000"
-        // })
-        // pref.addEventListener('mouseleave', (event) => {
-        //   event.currentTarget.style.fill = ""
-        // })
+
         // マウスクリック時のイベント
         pref.addEventListener('click', (event) => {
           console.log(event.currentTarget.id);
-          mapClickEvent(event.currentTarget.id);
+          mapChinaClick(event.currentTarget.id);
 
 
         })
       })
     }
-    function mapClickEvent(id) {
+    function japanMapSet() {
+
+      const prefs = document.querySelectorAll('.geolonia-svg-map .prefecture')
+
+      prefs.forEach((pref) => {
+        pref.addEventListener('mouseover', (event) => {
+          event.currentTarget.style.fill = "#ff0000"
+        })
+        pref.addEventListener('mouseleave', (event) => {
+          event.currentTarget.style.fill = ""
+        })
+
+        // マウスクリック時のイベント
+        pref.addEventListener('click', (event) => {
+          console.log(event.currentTarget.classList[0]);
+          console.log(event.currentTarget.firstElementChild.innerHTML);
+          speakJapanese(event.currentTarget.firstElementChild.innerHTML);
+
+        })
+      })
+    }
+    function mapClear() {
+      // China
+      const prefs = document.querySelectorAll('.shengName');
+      prefs.forEach((pref) => {
+        pref.style.fill = "";
+        
+      });
+      // Japan
+      const jpprefs = document.querySelectorAll('.geolonia-svg-map .prefecture');
+      jpprefs.forEach((jppref) => {
+        jppref.style.fill = "";
+        
+      });
+    }
+    function mapChinaClick(id) {
       let wShengName;
       for (let i = 0; i < pinyinName.length; i++) {
         if (pinyinName[i] === id) {
@@ -509,7 +551,7 @@
         }
 
       }
-     
+
       const prefs = document.querySelectorAll('.shengName');
       prefs.forEach((pref) => {
         if (pref.id === id) {
@@ -524,12 +566,20 @@
     }
     // テキストを音声に変換して再生する関数
     function speakText(shengName) {
-      
+
       const utterance = new SpeechSynthesisUtterance(shengName);
       utterance.lang = 'zh-CN'; // 中国語の言語コード
       synth.speak(utterance);
     }
-    
+    // テキストを音声に変換して再生する関数
+    function speakJapanese(text) {
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP'; // 日本語の言語コード
+      synth.speak(utterance);
+    }
+
+
   </script>
 
 </body>
