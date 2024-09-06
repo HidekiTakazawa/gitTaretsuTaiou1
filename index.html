@@ -444,6 +444,25 @@
       [strName, strBgColor] = strContent.split('高*沢');
       return [strName, strBgColor];
     }
+    // 
+    function cnVSiteString(strName) {
+      let siteComment;
+      let siteAddress;
+      let comment2 = strName.split('/http');
+      if (comment2.length === 1) {
+        siteComment = '参考サイト';
+        siteAddress = strName;
+
+      } else {
+        let comment3 = strName.split('/');
+        siteComment = comment3[0];
+    
+        siteAddress = strName.substring(comment3[0].length+1, strName.length);
+
+      }
+      return [siteComment, siteAddress];
+    
+    }
     // イニシャル　CSS セット　　最初のシートをイニシャル画面にする。
     function iniCSSSet() {
       sheetIndex = 0;
